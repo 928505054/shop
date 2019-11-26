@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_shop-item-interface" default="compile.module.shop-item-interface">
+  <dirname property="module.shop-item-interface.basedir" file="${ant.file.module_shop-item-interface}"/>
+  
+  <property name="module.jdk.home.shop-item-interface" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.shop-item-interface" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.shop-item-interface" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.shop-item-interface" value="-encoding UTF-8 -source 8 -target 1.8 ${compiler.args}"/>
+  
+  <property name="shop-item-interface.output.dir" value="${module.shop-item-interface.basedir}/target/classes"/>
+  <property name="shop-item-interface.testoutput.dir" value="${module.shop-item-interface.basedir}/target/test-classes"/>
+  
+  <path id="shop-item-interface.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="shop-item-interface.module.production.classpath">
+    <path refid="${module.jdk.classpath.shop-item-interface}"/>
+    <path refid="library.maven:_javax.persistence:javax.persistence-api:2.2.classpath"/>
+  </path>
+  
+  <path id="shop-item-interface.runtime.production.module.classpath">
+    <pathelement location="${shop-item-interface.output.dir}"/>
+    <path refid="library.maven:_javax.persistence:javax.persistence-api:2.2.classpath"/>
+  </path>
+  
+  <path id="shop-item-interface.module.classpath">
+    <path refid="${module.jdk.classpath.shop-item-interface}"/>
+    <pathelement location="${shop-item-interface.output.dir}"/>
+    <path refid="library.maven:_javax.persistence:javax.persistence-api:2.2.classpath"/>
+  </path>
+  
+  <path id="shop-item-interface.runtime.module.classpath">
+    <pathelement location="${shop-item-interface.testoutput.dir}"/>
+    <pathelement location="${shop-item-interface.output.dir}"/>
+    <path refid="library.maven:_javax.persistence:javax.persistence-api:2.2.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.shop-item-interface">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.shop-item-interface">
+    <patternset refid="excluded.from.module.shop-item-interface"/>
+  </patternset>
+  
+  <path id="shop-item-interface.module.sourcepath">
+    <dirset dir="${module.shop-item-interface.basedir}">
+      <include name="src/main/resource"/>
+      <include name="src/main/java"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.shop-item-interface" depends="compile.module.shop-item-interface.production,compile.module.shop-item-interface.tests" description="Compile module shop-item-interface"/>
+  
+  <target name="compile.module.shop-item-interface.production" depends="register.custom.compilers" description="Compile module shop-item-interface; production classes">
+    <mkdir dir="${shop-item-interface.output.dir}"/>
+    <javac2 destdir="${shop-item-interface.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.shop-item-interface}/javac">
+      <compilerarg line="${compiler.args.shop-item-interface}"/>
+      <bootclasspath refid="shop-item-interface.module.bootclasspath"/>
+      <classpath refid="shop-item-interface.module.production.classpath"/>
+      <src refid="shop-item-interface.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.shop-item-interface"/>
+    </javac2>
+    
+    <copy todir="${shop-item-interface.output.dir}">
+      <fileset dir="${module.shop-item-interface.basedir}/src/main/resource">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.shop-item-interface.basedir}/src/main/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.shop-item-interface.tests" depends="register.custom.compilers,compile.module.shop-item-interface.production" description="compile module shop-item-interface; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.shop-item-interface" description="cleanup module">
+    <delete dir="${shop-item-interface.output.dir}"/>
+    <delete dir="${shop-item-interface.testoutput.dir}"/>
+  </target>
+</project>

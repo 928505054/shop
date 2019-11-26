@@ -1,0 +1,25 @@
+server:
+  port: 8092
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/item?useSSL=true&serverTimezone=UTC
+    username: root
+    password: 928505054
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  application:
+    name: item-service
+  rabbitmq:
+    host: 127.0.0.1
+    username: guest
+    password: gueest
+    template:
+      exchange: shop.item.exchange
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8090/eureka
+  instance:
+    lease-renewal-interval-in-seconds: 5
+    lease-expiration-duration-in-seconds: 15
+mybatis:
+  type-aliases-package: com.bj.pojo

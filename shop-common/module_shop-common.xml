@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_shop-common" default="compile.module.shop-common">
+  <dirname property="module.shop-common.basedir" file="${ant.file.module_shop-common}"/>
+  
+  <property name="module.jdk.home.shop-common" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.shop-common" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.shop-common" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.shop-common" value="-encoding UTF-8 -source 8 -target 1.8 ${compiler.args}"/>
+  
+  <property name="shop-common.output.dir" value="${module.shop-common.basedir}/target/classes"/>
+  <property name="shop-common.testoutput.dir" value="${module.shop-common.basedir}/target/test-classes"/>
+  
+  <path id="shop-common.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="shop-common.module.production.classpath">
+    <path refid="${module.jdk.classpath.shop-common}"/>
+  </path>
+  
+  <path id="shop-common.runtime.production.module.classpath">
+    <pathelement location="${shop-common.output.dir}"/>
+  </path>
+  
+  <path id="shop-common.module.classpath">
+    <path refid="${module.jdk.classpath.shop-common}"/>
+    <pathelement location="${shop-common.output.dir}"/>
+  </path>
+  
+  <path id="shop-common.runtime.module.classpath">
+    <pathelement location="${shop-common.testoutput.dir}"/>
+    <pathelement location="${shop-common.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.shop-common">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.shop-common">
+    <patternset refid="excluded.from.module.shop-common"/>
+  </patternset>
+  
+  <path id="shop-common.module.sourcepath">
+    <dirset dir="${module.shop-common.basedir}">
+      <include name="src/main/java"/>
+      <include name="src/main/resources"/>
+    </dirset>
+  </path>
+  
+  <path id="shop-common.module.test.sourcepath">
+    <dirset dir="${module.shop-common.basedir}">
+      <include name="src/test"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.shop-common" depends="compile.module.shop-common.production,compile.module.shop-common.tests" description="Compile module shop-common"/>
+  
+  <target name="compile.module.shop-common.production" depends="register.custom.compilers" description="Compile module shop-common; production classes">
+    <mkdir dir="${shop-common.output.dir}"/>
+    <javac2 destdir="${shop-common.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.shop-common}/javac">
+      <compilerarg line="${compiler.args.shop-common}"/>
+      <bootclasspath refid="shop-common.module.bootclasspath"/>
+      <classpath refid="shop-common.module.production.classpath"/>
+      <src refid="shop-common.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.shop-common"/>
+    </javac2>
+    
+    <copy todir="${shop-common.output.dir}">
+      <fileset dir="${module.shop-common.basedir}/src/main/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.shop-common.basedir}/src/main/resources">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.shop-common.tests" depends="register.custom.compilers,compile.module.shop-common.production" description="compile module shop-common; test classes" unless="skip.tests">
+    <mkdir dir="${shop-common.testoutput.dir}"/>
+    <javac2 destdir="${shop-common.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.shop-common}/javac">
+      <compilerarg line="${compiler.args.shop-common}"/>
+      <bootclasspath refid="shop-common.module.bootclasspath"/>
+      <classpath refid="shop-common.module.classpath"/>
+      <src refid="shop-common.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.shop-common"/>
+    </javac2>
+    
+    <copy todir="${shop-common.testoutput.dir}">
+      <fileset dir="${module.shop-common.basedir}/src/test">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.shop-common" description="cleanup module">
+    <delete dir="${shop-common.output.dir}"/>
+    <delete dir="${shop-common.testoutput.dir}"/>
+  </target>
+</project>

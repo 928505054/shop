@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_shop" default="compile.module.shop">
+  <dirname property="module.shop.basedir" file="${ant.file.module_shop}"/>
+  
+  <property name="module.jdk.home.shop" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.shop" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.shop" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.shop" value="-encoding UTF-8 -source 8 -target 1.8 ${compiler.args}"/>
+  
+  <property name="shop.output.dir" value="${module.shop.basedir}/target/classes"/>
+  <property name="shop.testoutput.dir" value="${module.shop.basedir}/target/test-classes"/>
+  
+  <path id="shop.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="shop.module.production.classpath">
+    <path refid="${module.jdk.classpath.shop}"/>
+  </path>
+  
+  <path id="shop.runtime.production.module.classpath">
+    <pathelement location="${shop.output.dir}"/>
+  </path>
+  
+  <path id="shop.module.classpath">
+    <path refid="${module.jdk.classpath.shop}"/>
+    <pathelement location="${shop.output.dir}"/>
+  </path>
+  
+  <path id="shop.runtime.module.classpath">
+    <pathelement location="${shop.testoutput.dir}"/>
+    <pathelement location="${shop.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.shop">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.shop">
+    <patternset refid="excluded.from.module.shop"/>
+  </patternset>
+  
+  <path id="shop.module.sourcepath">
+    <dirset dir="${module.shop.basedir}">
+      <include name="src/main/java"/>
+      <include name="src/main/resources"/>
+    </dirset>
+  </path>
+  
+  <path id="shop.module.test.sourcepath">
+    <dirset dir="${module.shop.basedir}">
+      <include name="src/test/java"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.shop" depends="compile.module.shop.production,compile.module.shop.tests" description="Compile module shop"/>
+  
+  <target name="compile.module.shop.production" depends="register.custom.compilers" description="Compile module shop; production classes">
+    <mkdir dir="${shop.output.dir}"/>
+    <javac2 destdir="${shop.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.shop}/javac">
+      <compilerarg line="${compiler.args.shop}"/>
+      <bootclasspath refid="shop.module.bootclasspath"/>
+      <classpath refid="shop.module.production.classpath"/>
+      <src refid="shop.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.shop"/>
+    </javac2>
+    
+    <copy todir="${shop.output.dir}">
+      <fileset dir="${module.shop.basedir}/src/main/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.shop.basedir}/src/main/resources">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.shop.tests" depends="register.custom.compilers,compile.module.shop.production" description="compile module shop; test classes" unless="skip.tests">
+    <mkdir dir="${shop.testoutput.dir}"/>
+    <javac2 destdir="${shop.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.shop}/javac">
+      <compilerarg line="${compiler.args.shop}"/>
+      <bootclasspath refid="shop.module.bootclasspath"/>
+      <classpath refid="shop.module.classpath"/>
+      <src refid="shop.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.shop"/>
+    </javac2>
+    
+    <copy todir="${shop.testoutput.dir}">
+      <fileset dir="${module.shop.basedir}/src/test/java">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.shop" description="cleanup module">
+    <delete dir="${shop.output.dir}"/>
+    <delete dir="${shop.testoutput.dir}"/>
+  </target>
+</project>
